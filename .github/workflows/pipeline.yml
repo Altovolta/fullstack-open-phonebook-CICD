@@ -24,3 +24,27 @@ jobs:
       - name: Trigger Deployment
         if: ${{ github.event_name == 'push' }}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+
+  tag_release:
+    needs: [deployment_pipeline]
+    runs-on: ubuntu-latest
+    env: 
+      SHOULD_SKIP_TAG_RELEASE: ${{ contains(github.event.commits.*.message, '#skip') }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump version and push tag
+        if: ${{ github.event_name == 'push' && !env.SHOULD_SKIP_TAG_RELEASE }}
+        uses: anothrNick/github-tag-action@1.75.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+      - name: New version notification for discord
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        if: ${{ success() && github.event_name == 'push' && !env.SHOULD_SKIP_TAG_RELEASE }}
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: Github Notification
+          severity: info
+          color: '#00D100'
+          text: New version of phonebook deployed
+          description: to render by ${{ github.actor }}
