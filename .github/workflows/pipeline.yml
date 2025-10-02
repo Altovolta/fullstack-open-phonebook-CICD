@@ -37,7 +37,7 @@ jobs:
         run: echo "Push done"
       - name: tag skip
         if: ${{ env.SHOULD_SKIP_TAG_RELEASE }}
-        run: echo "$SHOULD_SKIP_TAG_RELEASE"
+        run: echo "${{ env.SHOULD_SKIP_TAG_RELEASE }}"
       - name: Bump version and push tag
         if: ${{ github.event_name == 'push' && !env.SHOULD_SKIP_TAG_RELEASE }}
         uses: anothrNick/github-tag-action@1.75.0
