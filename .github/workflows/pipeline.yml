@@ -29,7 +29,7 @@ jobs:
     needs: [deployment_pipeline]
     runs-on: ubuntu-latest
     env: 
-      SHOULD_SKIP_TAG_RELEASE: ${{ contains(github.event.commits.*.message), '#skip') }}
+      SHOULD_SKIP_TAG_RELEASE: ${{ contains(github.event.commits.*.message, '#skip') }}
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
