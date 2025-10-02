@@ -29,11 +29,12 @@ jobs:
     needs: [deployment_pipeline]
     runs-on: ubuntu-latest
     env:
-      COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+      COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}  
+      SHOULD_SKIP_TAG_RELEASE: ${{ contains(fromJson(env.COMMIT_MESSAGES), '#skip') }}
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' && !contains(fromJson(env.COMMIT_MESSAGES),'#skip')}}
+        if: ${{ github.event_name == 'push' && !env.SHOULD_SKIP_TAG_RELEASE }}
         uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
