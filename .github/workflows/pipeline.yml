@@ -33,14 +33,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' && !env.SHOULD_SKIP_TAG_RELEASE }}
+        if: ${{ github.event_name == 'push' && env.SHOULD_SKIP_TAG_RELEASE }}
         uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
       - name: New version notification for discord
         uses: rjstone/discord-webhook-notify@v2.2.1
-        if: ${{ success() && github.event_name == 'push' && !env.SHOULD_SKIP_TAG_RELEASE }}
+        if: ${{ success() && github.event_name == 'push' && env.SHOULD_SKIP_TAG_RELEASE }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           username: Github Notification
