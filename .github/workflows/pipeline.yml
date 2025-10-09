@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies & build
         run: ./scripts/build.sh
       - name: Run linter       
-        run: npm run lint:all
+        run: cd backend && npm run lint:all
       - name: Trigger Deployment
         if: ${{ github.event_name == 'push' }}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}

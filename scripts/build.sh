@@ -2,8 +2,9 @@
 
 echo "Build script"
 
+cd backend
 npm install
-cd frontend
+cd ../frontend
 npm install
-cd ..   
+cd ../backend   
 npm run build:ui
